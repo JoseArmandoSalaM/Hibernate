@@ -25,6 +25,11 @@ public class Autor {
     @Column(name = "pais_origen")
     private String paisorigen;
 
+    public Autor(String nombre, String apellido) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+    }
+
     public Autor(String id, String nombre, String apellido, Date fechanacimiento, String paisorigen) {
         this.id = id;
         this.nombre = nombre;

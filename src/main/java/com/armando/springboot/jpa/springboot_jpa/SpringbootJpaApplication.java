@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.armando.springboot.jpa.springboot_jpa.DTO.PersonalizedDTO;
 import com.armando.springboot.jpa.springboot_jpa.entities.Autor;
 import com.armando.springboot.jpa.springboot_jpa.repositories.PersonRepository;
 
@@ -31,9 +32,161 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 
 		// findOne();
 		// list();
-		create();
+		// create();
 		// update();
 		// delete2();
+
+		// personalizedQueries();
+		// personalizedQueries2();
+
+		// personalizedQueriesDistinct();
+
+		// personalizedQueriesConcatUpperandLower();
+		// personalizedQueriesBetween();
+		// OrderBy();
+		queriesfuntionAggregation();
+	}
+
+	@Transactional(readOnly = true)
+	public void queriesfuntionAggregation() {
+
+		System.out.println("================================= consulta con el total de registros de la tabla");
+		Long count = repository.totalPerson();
+		System.out.println(count);
+		// Long min = repository.minId();
+		// System.out.println(min);
+		// Long max = repository.maxId();
+		// System.out.println(max);
+
+		System.out.println("Consulta con su nombre y largo");
+		List<Object[]> regs = repository.getPersonNameLength();
+		regs.forEach(p -> {
+			String name = (String) p[0];
+			Integer length = (Integer) p[1];
+
+			System.out.println("name: " + name + ", length: " + length);
+		});
+
+		Integer min = repository.getMinLengthName();
+		Integer max = repository.getMaxLengthName();
+
+		System.out.println(min);
+		System.out.println(max);
+
+	}
+
+	@Transactional(readOnly = true)
+	public void OrderBy() {
+		List<Autor> name = repository.getAllOrdered();
+		name.forEach(p -> {
+			System.out.println(p);
+		});
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueriesBetween() {
+		List<Autor> name = repository.findByNombreBetweenOrderByNombreDescApellidoDesc("A", "Z");
+		name.forEach(p -> {
+			System.out.println(p);
+		});
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueriesConcatUpperandLower() {
+
+		System.out.println("============================================================");
+
+		List<String> name = repository.getNameAndConcat();
+		name.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("============================================================");
+
+		List<String> name1 = repository.getNameAndConcat2();
+		name1.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("============================================================");
+
+		List<String> name2 = repository.getNameAndConcatlower();
+		name2.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("============================================================");
+
+		List<String> name3 = repository.getNameAndConcatupper();
+		name3.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("============================================================");
+
+		List<String> name4 = repository.getNameAndConcatupperandlower();
+		name4.forEach(p -> {
+			System.out.println(p);
+		});
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueriesDistinct() {
+		System.out.println("Consultas con nombres de personas");
+
+		List<String> names = repository.findAllName();
+		names.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("==============================");
+
+		List<String> namess = repository.findAllNameDistinct();
+		namess.forEach(p -> {
+			System.out.println(p);
+		});
+		System.out.println("==============================");
+		Long count = repository.findAllNameDistinctCount();
+		System.out.println(count);
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueries2() {
+
+		List<Object[]> autor = repository.findAllMixPersonDataList();
+
+		autor.forEach(reg -> {
+			System.out.println("Nombre: " + reg[0] + ", Persona: " + reg[1]);
+		});
+
+		System.out.println("Consulta que pobla y devuelve el objeto entity de una clase personalizada: ");
+		List<Autor> autores = repository.findAllPersonalizedObjectPerson();
+		autores.forEach(p -> {
+			System.out.println(p);
+		});
+
+		System.out.println("Consulta que pobla y devuelve el objeto dto");
+		List<PersonalizedDTO> person = repository.findAllPersonalizedDTO();
+
+		person.forEach(p -> {
+			System.out.println(p);
+		});
+
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueries() {
+
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Ingrese el id para buscar a la persona");
+		String id = scanner.next();
+		scanner.close();
+
+		String name = repository.getNameAndApellidoById(id);
+		System.out.println(name);
+
+		Optional<Object> data = repository.obtenerPersonDataById(id);
+		if (data.isPresent()) {
+			Object[] personaReg = (Object[]) data.get();
+			System.out.println("id: " + personaReg[0] + ", nombre: " + personaReg[1] + ", apellido: " + personaReg[2]);
+		}
+
 	}
 
 	@Transactional
