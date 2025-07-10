@@ -3,6 +3,7 @@ package com.armando.springboot.jpa.springboot_jpa;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -44,7 +45,46 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 		// personalizedQueriesConcatUpperandLower();
 		// personalizedQueriesBetween();
 		// OrderBy();
-		queriesfuntionAggregation();
+		// queriesfuntionAggregation();
+		// subQueries();
+
+		whereIn();
+	}
+
+	@Transactional(readOnly = true)
+	public void whereIn() {
+		List<Autor> persons = repository.getPersonByIds();
+
+		persons.forEach(p -> {
+			System.out.println(p);
+		});
+
+		List<Autor> persons2 = repository
+				.getPersonByIdsConsole(Arrays.asList("AUTOR-AR-004", "AUTOR-AR-005", "AUTOR-ARR-222"));
+		persons2.forEach(p -> {
+			System.out.println(p);
+		});
+
+		List<Autor> persons3 = repository
+				.getNotPersonByIdsConsole(Arrays.asList("AUTOR-AR-004", "AUTOR-AR-005", "AUTOR-ARR-222"));
+		persons3.forEach(p -> {
+			System.out.println(p);
+		});
+	}
+
+	@Transactional(readOnly = true)
+	public void subQueries() {
+
+		System.out.println("=================================");
+
+		List<Object[]> name = repository.getShorterName();
+		name.forEach(p -> {
+			String nombre = (String) p[0];
+			Integer length = (Integer) p[1];
+
+			System.out.println("name: " + nombre + ", length: " + length);
+		});
+
 	}
 
 	@Transactional(readOnly = true)
@@ -72,6 +112,11 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 
 		System.out.println(min);
 		System.out.println(max);
+
+		System.out.println("===============================================");
+
+		Object[] counts = (Object[]) repository.getResumeAggregationFuntion();
+		System.out.println("min= " + counts[0] + " sum= " + counts[1]);
 
 	}
 

@@ -14,6 +14,24 @@ import com.armando.springboot.jpa.springboot_jpa.entities.Autor;
 
 public interface PersonRepository extends CrudRepository<Autor, String> {
 
+    @Query("select p from Autor p where p.id not in ?1")
+    public List<Autor> getNotPersonByIdsConsole(List<String> ids);
+
+    @Query("select p from Autor p where p.id in ?1")
+    public List<Autor> getPersonByIdsConsole(List<String> ids);
+
+    @Query("select p from Autor p where p.id in ('AUTOR-AR-004', 'AUTOR-AR-005', 'AUTOR-ARR-222')")
+    public List<Autor> getPersonByIds();
+
+    // @Query("select p from Autor p where p.id = (select max(p.id) from Autor p)")
+    // public Optional<Autor> getLastRegistration();
+
+    @Query("select p.nombre, length(p.nombre) from Autor p where length(p.nombre)=(select min(length(p.nombre)) from Autor p)")
+    public List<Object[]> getShorterName();
+
+    @Query("select min(length(p.nombre)), sum(length(p.nombre)) from Autor p")
+    public Object getResumeAggregationFuntion();
+
     @Query("select min(length(p.nombre)) from Autor p")
     public Integer getMinLengthName();
 
