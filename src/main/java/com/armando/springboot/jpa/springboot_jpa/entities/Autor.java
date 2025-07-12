@@ -3,9 +3,11 @@ package com.armando.springboot.jpa.springboot_jpa.entities;
 import java.sql.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
+
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +26,9 @@ public class Autor {
 
     @Column(name = "pais_origen")
     private String paisorigen;
+
+    @Embedded
+    private Audit audit = new Audit();
 
     public Autor(String nombre, String apellido) {
         this.nombre = nombre;
@@ -84,7 +89,9 @@ public class Autor {
     @Override
     public String toString() {
         return "Autor [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", fechanacimiento="
-                + fechanacimiento + ", paisorigen=" + paisorigen + "]";
+                + fechanacimiento + ", paisorigen=" + paisorigen + ", created_at= " + audit.getCreatedAt()
+                + ", updatedAt= "
+                + audit.getUpdatedAt() + "]";
     }
 
 }
